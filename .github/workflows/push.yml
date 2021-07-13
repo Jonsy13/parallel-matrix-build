@@ -217,13 +217,10 @@ jobs:
     strategy:
       matrix:
         frontend-matrix:
-          [
-            { "image_name": "${FRONTEND_IMAGE}", "path": "" },
-            {
-              "image_name": "${FRONTEND_IMAGE}-path-litmuschaos",
-              "path": "/litmuschaos",
-            },
-          ]
+          - image_name: "${FRONTEND_IMAGE}"
+            path: ""
+          - image_name: "${FRONTEND_IMAGE}-path-litmuschaos"
+            path: "/litmuschaos"
     needs:
       - get-envs
       - frontend-checks
