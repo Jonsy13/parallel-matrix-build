@@ -92,8 +92,8 @@ jobs:
 
       - name: Push graphql server docker image
         env:
-          IMG_TAG: ${IMG_TAG}
           IMAGE_NAME: ${GRAPHQL_SERVER_IMAGE}
+          IMG_TAG: ${IMG_TAG}
           PLATFORMS: ${{ secrets.PLATFORMS }}
           REPONAME: ${{ secrets.REPONAME }}
           DIRECTORY: "graphql-server"
@@ -130,8 +130,8 @@ jobs:
 
       - name: Push auth server docker image
         env:
-          IMG_TAG: ${IMG_TAG}
           IMAGE_NAME: ${AUTHENTICATION_SERVER_IMAGE}
+          IMG_TAG: ${IMG_TAG}
           PLATFORMS: ${{ secrets.PLATFORMS }}
           REPONAME: ${{ secrets.REPONAME }}
           DIRECTORY: "authentication"
@@ -168,8 +168,8 @@ jobs:
 
       - name: Push subscriber docker image
         env:
-          IMG_TAG: ${IMG_TAG}
           IMAGE_NAME: ${SUBSCRIBER_IMAGE}
+          IMG_TAG: ${IMG_TAG}
           PLATFORMS: ${{ secrets.PLATFORMS }}
           REPONAME: ${{ secrets.REPONAME }}
           DIRECTORY: "cluster-agents/subscriber/"
@@ -206,8 +206,8 @@ jobs:
 
       - name: Push event tracker docker image
         env:
-          IMG_TAG: ${IMG_TAG}
           IMAGE_NAME: ${EVENT_TRACKER}
+          IMG_TAG: ${IMG_TAG}
           PLATFORMS: ${{ secrets.PLATFORMS }}
           REPONAME: ${{ secrets.REPONAME }}
           DIRECTORY: "cluster-agents/event-tracker/"
@@ -215,7 +215,10 @@ jobs:
           source env-vars
           make push-portal-component
 
-  docker-build-and-push-frontend-matrix:
+  ## TODO: the build time for multiarch frontend image is higher so it is used in the release
+  ## builds only need to optimize the build duration and also add it with ci tag
+  ## Build and push / base path
+  docker-build-and-push-frontend:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -252,12 +255,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Push frontend docker image (root)
+      - name: Push frontend docker image ( ${{ matrix.frontend.image_name }} )
         env:
+          FRONTEND_IMAGE: ${{ matrix.frontend.image_name }}
+          IMG_TAG: ${IMG_TAG}
           PLATFORMS: ${{ secrets.PLATFORMS }}
           REPONAME: ${{ secrets.REPONAME }}
+          timestamp: ${timestamp}
           PUBLIC_URL: ${{ matrix.frontend.path }}
-          FRONTEND_IMAGE: ${{ matrix.frontend.image_name }}
         run: |
           source env-vars
           timestamp=`date "+%s"`
