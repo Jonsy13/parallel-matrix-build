@@ -11,14 +11,21 @@ defaults:
     working-directory: litmus-portal
     shell: bash
 
+env:
+  GRAPHQL_SERVER_IMAGE: "litmusportal-server"
+  AUTHENTICATION_SERVER_IMAGE: "litmusportal-auth-server"
+  FRONTEND_IMAGE: "litmusportal-frontend"
+  SUBSCRIBER_IMAGE: "litmusportal-subscriber"
+  EVENT_TRACKER: "litmusportal-event-tracker"
+
 jobs:
-  # backend-checks:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v2
-  #     - run: |
-  #         make backend-services-checks
+  backend-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - run: |
+          make backend-services-checks
 
   frontend-checks:
     runs-on: ubuntu-latest
@@ -48,11 +55,6 @@ jobs:
           NEW_IMG_TAG=`echo $img_tag | sed "s/\//-/g"`
           echo $NEW_IMG_TAG
           echo export IMG_TAG=$NEW_IMG_TAG >> env-vars
-          echo export GRAPHQL_SERVER_IMAGE="litmusportal-server" >> env-vars
-          echo export AUTHENTICATION_SERVER_IMAGE="litmusportal-auth-server" >> env-vars
-          echo export FRONTEND_IMAGE="litmusportal-frontend" >> env-vars
-          echo export SUBSCRIBER_IMAGE="litmusportal-subscriber" >> env-vars
-          echo export EVENT_TRACKER="litmusportal-event-tracker" >> env-vars
 
       - name: Uploading envs
         uses: actions/upload-artifact@v2
@@ -60,167 +62,162 @@ jobs:
           name: env_artifact
           path: litmus-portal/env-vars
 
-  # docker-build-and-push-graphql-server:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - get-envs
-  #     - backend-checks
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
+  docker-build-and-push-graphql-server:
+    runs-on: ubuntu-latest
+    needs:
+      - get-envs
+      - backend-checks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  #     - name: Downloading image artficate
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: env_artifact
-  #         path: litmus-portal
+      - name: Downloading image artficate
+        uses: actions/download-artifact@v2
+        with:
+          name: env_artifact
+          path: litmus-portal
 
-  #     - name: Set up Docker Buildx
-  #       id: buildx
-  #       uses: docker/setup-buildx-action@v1
-  #       with:
-  #         version: latest
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          version: latest
 
-  #     - name: Login to DockerHub
-  #       uses: docker/login-action@v1
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  #     - name: Push graphql server docker image
-  #       env:
-  #         IMAGE_NAME: ${GRAPHQL_SERVER_IMAGE}
-  #         IMG_TAG: ${IMG_TAG}
-  #         PLATFORMS: ${{ secrets.PLATFORMS }}
-  #         REPONAME: ${{ secrets.REPONAME }}
-  #         DIRECTORY: "graphql-server"
-  #       run: |
-  #         source env-vars
-  #         make push-portal-component
+      - name: Push graphql server docker image
+        env:
+          PLATFORMS: ${{ secrets.PLATFORMS }}
+          REPONAME: ${{ secrets.REPONAME }}
+          DIRECTORY: "graphql-server"
+        run: |
+          source env-vars
+          make push-portal-component
 
-  # docker-build-and-push-authentication-server:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - get-envs
-  #     - backend-checks
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
+  docker-build-and-push-authentication-server:
+    runs-on: ubuntu-latest
+    needs:
+      - get-envs
+      - backend-checks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  #     - name: Downloading image artficate
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: env_artifact
-  #         path: litmus-portal
+      - name: Downloading image artficate
+        uses: actions/download-artifact@v2
+        with:
+          name: env_artifact
+          path: litmus-portal
 
-  #     - name: Set up Docker Buildx
-  #       id: buildx
-  #       uses: docker/setup-buildx-action@v1
-  #       with:
-  #         version: latest
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          version: latest
 
-  #     - name: Login to DockerHub
-  #       uses: docker/login-action@v1
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  #     - name: Push auth server docker image
-  #       env:
-  #         IMAGE_NAME: ${AUTHENTICATION_SERVER_IMAGE}
-  #         IMG_TAG: ${IMG_TAG}
-  #         PLATFORMS: ${{ secrets.PLATFORMS }}
-  #         REPONAME: ${{ secrets.REPONAME }}
-  #         DIRECTORY: "authentication"
-  #       run: |
-  #         source env-vars
-  #         make push-portal-component
+      - name: Push auth server docker image
+        env:
+          PLATFORMS: ${{ secrets.PLATFORMS }}
+          REPONAME: ${{ secrets.REPONAME }}
+          DIRECTORY: "authentication"
+        run: |
+          source env-vars
+          make push-portal-component
 
-  # docker-build-and-push-subscriber:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - get-envs
-  #     - backend-checks
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
+  docker-build-and-push-subscriber:
+    runs-on: ubuntu-latest
+    needs:
+      - get-envs
+      - backend-checks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  #     - name: Downloading image artficate
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: env_artifact
-  #         path: litmus-portal
+      - name: Downloading image artficate
+        uses: actions/download-artifact@v2
+        with:
+          name: env_artifact
+          path: litmus-portal
 
-  #     - name: Set up Docker Buildx
-  #       id: buildx
-  #       uses: docker/setup-buildx-action@v1
-  #       with:
-  #         version: latest
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          version: latest
 
-  #     - name: Login to DockerHub
-  #       uses: docker/login-action@v1
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  #     - name: Push subscriber docker image
-  #       env:
-  #         IMAGE_NAME: ${SUBSCRIBER_IMAGE}
-  #         IMG_TAG: ${IMG_TAG}
-  #         PLATFORMS: ${{ secrets.PLATFORMS }}
-  #         REPONAME: ${{ secrets.REPONAME }}
-  #         DIRECTORY: "cluster-agents/subscriber/"
-  #       run: |
-  #         source env-vars
-  #         make push-portal-component
+      - name: Push subscriber docker image
+        env:
+          PLATFORMS: ${{ secrets.PLATFORMS }}
+          REPONAME: ${{ secrets.REPONAME }}
+          DIRECTORY: "cluster-agents/subscriber/"
+        run: |
+          source env-vars
+          make push-portal-component
 
-  # docker-build-and-push-event-tracker:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - get-envs
-  #     - backend-checks
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
+  docker-build-and-push-event-tracker:
+    runs-on: ubuntu-latest
+    needs:
+      - get-envs
+      - backend-checks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  #     - name: Downloading image artficate
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: env_artifact
-  #         path: litmus-portal
+      - name: Downloading image artficate
+        uses: actions/download-artifact@v2
+        with:
+          name: env_artifact
+          path: litmus-portal
 
-  #     - name: Set up Docker Buildx
-  #       id: buildx
-  #       uses: docker/setup-buildx-action@v1
-  #       with:
-  #         version: latest
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          version: latest
 
-  #     - name: Login to DockerHub
-  #       uses: docker/login-action@v1
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  #     - name: Push event tracker docker image
-  #       env:
-  #         IMAGE_NAME: ${EVENT_TRACKER}
-  #         IMG_TAG: ${IMG_TAG}
-  #         PLATFORMS: ${{ secrets.PLATFORMS }}
-  #         REPONAME: ${{ secrets.REPONAME }}
-  #         DIRECTORY: "cluster-agents/event-tracker/"
-  #       run: |
-  #         source env-vars
-  #         make push-portal-component
+      - name: Push event tracker docker image
+        env:
+          PLATFORMS: ${{ secrets.PLATFORMS }}
+          REPONAME: ${{ secrets.REPONAME }}
+          DIRECTORY: "cluster-agents/event-tracker/"
+        run: |
+          source env-vars
+          make push-portal-component
 
   docker-build-and-push-frontend-matrix:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        frontend-matrix:
-          - image_name: ${FRONTEND_IMAGE}
-            path: ""
-          - image_name: ${FRONTEND_IMAGE}-path-litmuschaos
-            path: "/litmuschaos"
+        frontend:
+          [
+            { "image_name": "litmusportal-frontend", "path": "" },
+            {
+              "image_name": "litmusportal-frontend-path-litmuschaos",
+              "path": "/litmuschaos",
+            },
+          ]
     needs:
       - get-envs
       - frontend-checks
@@ -246,14 +243,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Push frontend docker image (/litmuschaos)
+      - name: Push frontend docker image (root)
         env:
-          FRONTEND_IMAGE: ${{ matrix.frontend-matrix.image_name }}
-          IMG_TAG: ${IMG_TAG}
           PLATFORMS: ${{ secrets.PLATFORMS }}
           REPONAME: ${{ secrets.REPONAME }}
-          timestamp: ${timestamp}
-          PUBLIC_URL: ${{ matrix.frontend-matrix.path }}
+          PUBLIC_URL: ${{ matrix.frontend.path }}
+          FRONTEND_IMAGE: ${{ matrix.frontend.image_name }}
         run: |
           source env-vars
           timestamp=`date "+%s"`
