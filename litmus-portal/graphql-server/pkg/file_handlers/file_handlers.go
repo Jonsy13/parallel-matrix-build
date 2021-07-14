@@ -27,7 +27,7 @@ var subscriberConfiguration = &types.SubscriberConfigurationVars{
 	ContainerRuntimeExecutor: os.Getenv("CONTAINER_RUNTIME_EXECUTOR"),
 }
 
-// FileHandler dynamically generates the manifest file and sends it as a response
+// FileHandler dynamically generates the man
 func FileHandler(w http.ResponseWriter, r *http.Request) {
 	var (
 		vars  = mux.Vars(r)
