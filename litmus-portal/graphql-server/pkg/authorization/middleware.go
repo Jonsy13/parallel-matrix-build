@@ -31,7 +31,7 @@ func Middleware(handler http.Handler) http.Handler {
 	})
 }
 
-// RestMiddlewareWithRole verifies jwt and checks if user has enough privilege to access route
+// RestMiddlewareWithRole verifies jwt and checks if user has e
 func RestMiddlewareWithRole(handler http.Handler, roles []string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		jwt := ""
