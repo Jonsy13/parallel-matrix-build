@@ -11,13 +11,6 @@ defaults:
     working-directory: litmus-portal
     shell: bash
 
-env:
-  GRAPHQL_SERVER_IMAGE: "litmusportal-server"
-  AUTHENTICATION_SERVER_IMAGE: "litmusportal-auth-server"
-  FRONTEND_IMAGE: "litmusportal-frontend"
-  SUBSCRIBER_IMAGE: "litmusportal-subscriber"
-  EVENT_TRACKER: "litmusportal-event-tracker"
-
 jobs:
   backend-checks:
     runs-on: ubuntu-latest
@@ -55,6 +48,11 @@ jobs:
           NEW_IMG_TAG=`echo $img_tag | sed "s/\//-/g"`
           echo $NEW_IMG_TAG
           echo export IMG_TAG=$NEW_IMG_TAG >> env-vars
+          echo export GRAPHQL_SERVER_IMAGE="litmusportal-server" >> env-vars
+          echo export AUTHENTICATION_SERVER_IMAGE="litmusportal-auth-server" >> env-vars
+          echo export FRONTEND_IMAGE="litmusportal-frontend" >> env-vars
+          echo export SUBSCRIBER_IMAGE="litmusportal-subscriber" >> env-vars
+          echo export EVENT_TRACKER="litmusportal-event-tracker" >> env-vars
 
       - name: Uploading envs
         uses: actions/upload-artifact@v2
