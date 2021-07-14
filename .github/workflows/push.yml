@@ -92,6 +92,8 @@ jobs:
 
       - name: Push graphql server docker image
         env:
+          IMG_TAG: ${IMG_TAG}
+          IMAGE_NAME: ${GRAPHQL_SERVER_IMAGE}
           PLATFORMS: ${{ secrets.PLATFORMS }}
           REPONAME: ${{ secrets.REPONAME }}
           DIRECTORY: "graphql-server"
@@ -128,6 +130,8 @@ jobs:
 
       - name: Push auth server docker image
         env:
+          IMG_TAG: ${IMG_TAG}
+          IMAGE_NAME: ${AUTHENTICATION_SERVER_IMAGE}
           PLATFORMS: ${{ secrets.PLATFORMS }}
           REPONAME: ${{ secrets.REPONAME }}
           DIRECTORY: "authentication"
@@ -164,6 +168,8 @@ jobs:
 
       - name: Push subscriber docker image
         env:
+          IMG_TAG: ${IMG_TAG}
+          IMAGE_NAME: ${SUBSCRIBER_IMAGE}
           PLATFORMS: ${{ secrets.PLATFORMS }}
           REPONAME: ${{ secrets.REPONAME }}
           DIRECTORY: "cluster-agents/subscriber/"
@@ -200,6 +206,8 @@ jobs:
 
       - name: Push event tracker docker image
         env:
+          IMG_TAG: ${IMG_TAG}
+          IMAGE_NAME: ${EVENT_TRACKER}
           PLATFORMS: ${{ secrets.PLATFORMS }}
           REPONAME: ${{ secrets.REPONAME }}
           DIRECTORY: "cluster-agents/event-tracker/"
