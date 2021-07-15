@@ -264,6 +264,6 @@ jobs:
           PUBLIC_URL: ${{ matrix.frontend.path }}
         run: |
           source env-vars
-          FRONTEND_IMAGE: ${{ matrix.frontend.image_name }}
+          FRONTEND_IMAGE=${{ matrix.frontend.image_name }}
           timestamp=`date "+%s"`
           make push-frontend
