@@ -5,6 +5,9 @@ on:
       - master
       - v*
 
+env:
+  DOCKER_BUILDKIT: 1 
+
 jobs:
   changes:
     runs-on: ubuntu-latest
