@@ -102,7 +102,7 @@ jobs:
             **Test Status:** The testing has been started please wait for the results ...
 
       - name: Setting up KinD Cluster
-        run: kind create cluster
+        run: kind create cluster --wait 5m
 
       - name: Configuring and Testing the Cluster Installation
         run: |
