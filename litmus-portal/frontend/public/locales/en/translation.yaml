@@ -11,7 +11,7 @@ getStarted:
     name: projectName
     label: Project Name
     info: Set your project name
-    desc: Choose an appropriate name for your project. This project name will be used when collaborating with your team members.
+    desc: Choose an appropriate name for your project. This project name will be used 
   password:
     name: password
     label: Password
