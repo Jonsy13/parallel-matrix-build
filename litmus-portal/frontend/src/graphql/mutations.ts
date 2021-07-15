@@ -33,8 +33,14 @@ export const CREATE_USER = gql`
       username
       created_at
       updated_at
-      removed_at
+      deactivated_at
     }
+  }
+`;
+
+export const UPDATE_USER_STATE = gql`
+  mutation updateUserState($uid: String!, $isDeactivate: Boolean!) {
+    updateUserState(uid: $uid, isDeactivate: $isDeactivate)
   }
 `;
 
@@ -265,8 +271,14 @@ export const CREATE_DASHBOARD = gql`
 `;
 
 export const UPDATE_DASHBOARD = gql`
-  mutation updateDashboard($updateDBInput: updateDBInput) {
-    updateDashboard(dashboard: $updateDBInput)
+  mutation updateDashboard(
+    $updateDBInput: updateDBInput!
+    $chaosQueryUpdate: Boolean!
+  ) {
+    updateDashboard(
+      dashboard: $updateDBInput
+      chaosQueryUpdate: $chaosQueryUpdate
+    )
   }
 `;
 

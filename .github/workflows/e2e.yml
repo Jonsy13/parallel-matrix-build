@@ -102,9 +102,7 @@ jobs:
             **Test Status:** The testing has been started please wait for the results ...
 
       - name: Setting up KinD Cluster
-        uses: engineerd/setup-kind@v0.5.0
-        with:
-          version: "v0.9.0"
+        run: kind create cluster
 
       - name: Configuring and Testing the Cluster Installation
         run: |
