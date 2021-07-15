@@ -141,7 +141,7 @@ jobs:
           echo "URL=$AccessURL" >> $GITHUB_ENV
 
       - name: Portal Authentication Tests
-        if: startsWith(github.event.comment.body, '/run-e2e')
+        if: always()
         uses: cypress-io/github-action@v2
         continue-on-error: false
         with:
@@ -162,7 +162,7 @@ jobs:
           COMPONENTS: subscriber,chaos-exporter,chaos-operator-ce,event-tracker,workflow-controller
 
       - name: Post Authentication Tests
-        if: startsWith(github.event.comment.body, '/run-e2e')
+        if: always()
         uses: cypress-io/github-action@v2
         continue-on-error: false
         with:
@@ -174,7 +174,7 @@ jobs:
           CYPRESS_BASE_URL: ${{ env.URL }}
 
       - name: Check the test run
-        if: startsWith(github.event.comment.body, '/run-e2e')
+        if: always()
         run: |
           echo "TEST_RUN=true" >> $GITHUB_ENV
 
