@@ -10,7 +10,7 @@ import (
 
 var secret = os.Getenv("JWT_SECRET")
 
-// ClusterCreateJWT generates jwt used in cluster registration
+// ClusterCreateJWT generates jwt used 
 func ClusterCreateJWT(id string) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["cluster_id"] = id
